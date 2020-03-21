@@ -1,11 +1,44 @@
+import React, {useState} from "react";
 import {Button, Form} from "react-bootstrap";
 import {useHistory, useParams} from "react-router";
-import {compose, includes, mergeRight, omit, prop} from "ramda";
+import {equals, compose, includes, mergeRight, omit, prop} from "ramda";
 import * as people from './people-calls';
-import React, {useState} from "react";
 import Geocoder from "react-mapbox-gl-geocoder";
 
 export const handleChange = setter => e => setter(e.target.value);
+const isIn = obj => k => Boolean(obj[k]);
+
+const masterRoles = [
+	{
+		_id: 'to-help',
+		needsHelp: false,
+		selectable: true,
+	}, {
+		_id: 'zone-captain',
+		needsHelp: false,
+		selectable: false,
+	}, {
+		_id: 'for-help',
+		needsHelp: true,
+		selectable: true,
+	},
+];
+
+const getId = prop('_id');
+const isSelectable = prop('selectable');
+const doesntNeedHelp = compose(
+	equals(false),
+	prop('needsHelp'),
+);
+const needsHelp = compose(
+	equals(true),
+	prop('needsHelp'),
+);
+const roles = masterRoles.map(getId);
+const helpyRoles = masterRoles.filter(doesntNeedHelp).map(getId);
+const needsHelpy = masterRoles.filter(needsHelp).map(getId);
+const selectableRoles = masterRoles.filter(isSelectable).map(getId);
+const isHelpy = x => includes(x, helpyRoles);
 
 const FormRow = ({
 	label, value, setter, description, _id,
@@ -74,11 +107,6 @@ export const SignUpForm = () => {
 		fontSize: '1.15em',
 	};
 
-	const roles = ['to-help', 'zone-captain', 'for-help'];
-	const helpyRoles = ['to-help', 'zone-captain'];
-	const needsHelpy = ['for-help'];
-	const selectableRoles = ['to-help', 'for-help'];
-	const isHelpy = x => includes(x, helpyRoles);
 
 	const [name, setName] = useState('');
 	const [message, setMessage] = useState('');
@@ -180,8 +208,6 @@ export const SignUpForm = () => {
 		},
 	];
 
-	const isIn = obj => k => Boolean(obj[k]);
-
 	const handleSubmit = e => {
 		e.preventDefault();
 		const allFields = fields.concat(extraFields);
@@ -237,8 +263,8 @@ export const SignUpForm = () => {
 		</div>
 	) : null;
 
-	return (
-		<Form onSubmit={handleSubmit}>
+	const Header = () => (
+		<div>
 			<h2>
 				Help us help you:
 			</h2>
@@ -254,6 +280,12 @@ export const SignUpForm = () => {
 				But we've got to get this app started somehow.
 			</p>
 			<h2>{error}</h2>
+		</div>
+	);
+
+	return (
+		<Form onSubmit={handleSubmit}>
+			<Header />
 			<Group>
 				{
 					/* TODO

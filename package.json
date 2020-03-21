@@ -12,6 +12,7 @@
     "@mapbox/mapbox-gl-geocoder": "^4.5.1",
     "bootstrap": "^4.4.1",
     "email-validator": "^2.0.4",
+    "formik": "^2.1.4",
     "history": "^4.10.1",
     "jquery": "^3.4.1",
     "mapbox-gl": "^1.8.1",
@@ -21,7 +22,8 @@
     "react-bootstrap": "^1.0.0-beta.17",
     "react-dom": "^16.13.1",
     "react-mapbox-gl-geocoder": "^1.1.0",
-    "react-router": "^5.1.2"
+    "react-router": "^5.1.2",
+    "url": "^0.11.0"
   },
   "meteor": {
     "mainModule": {
