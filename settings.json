@@ -1,4 +1,9 @@
 {
+	"galaxy.meteor.com": {
+		"env": {
+			"MONGO_URL": "mongodb+srv://aljedaxi:P1l0tG1rl@mutual-aid-machine-0-txt0c.gcp.mongodb.net/test?retryWrites=true&w=majority"
+		}
+	},
 	"public": {
 		"MAPBOX_TOKEN": "pk.eyJ1IjoibXV0dWFsLWFpZC1tYWNoaW5lIiwiYSI6ImNrODB5MDkzazA0enYzZXA0ZWR6YzRoMjAifQ.rcm8hbqaYNN4B47JkKasiQ"
 	}
