@@ -1,6 +1,7 @@
 import {Button, Form} from "react-bootstrap";
 import {useHistory, useParams} from "react-router";
 import {compose, includes, mergeRight, omit, prop} from "ramda";
+import * as people from './people-calls';
 import React, {useState} from "react";
 import Geocoder from "react-mapbox-gl-geocoder";
 
@@ -13,54 +14,54 @@ const FormRow = ({
 	options = [],
 	rows = 3,
 }) => {
-		const {Group, Label, Control, Text} = Form;
-		const option = r => (
+	const {Group, Label, Control, Text} = Form;
+	const option = r => (
 		<option
-		value={r}
-		key={r}
+			value={r}
+			key={r}
 		>
-		{r}
+			{r}
 		</option>
-		);
+	);
 
-		const control = type === 'select' ? (
+	const control = type === 'select' ? (
 		<Control
-		required={required}
-		value={value}
-		onChange={handleChange(setter)}
-		as={type}
-		placeholder={description}
+			required={required}
+			value={value}
+			onChange={handleChange(setter)}
+			as={type}
+			placeholder={description}
 		>
-		{options.map(option)}
+			{options.map(option)}
 		</Control>
-		) : type === 'textarea' ? (
+	) : type === 'textarea' ? (
 		<Control
-		required={required}
-		value={value}
-		onChange={handleChange(setter)}
-		as={type}
-		rows={rows}
-		placeholder={description}
+			required={required}
+			value={value}
+			onChange={handleChange(setter)}
+			as={type}
+			rows={rows}
+			placeholder={description}
 		/>
-		) : (
+	) : (
 		<Control
-		required={required}
-		value={value}
-		onChange={handleChange(setter)}
-		type={type}
-		placeholder={description}
+			required={required}
+			value={value}
+			onChange={handleChange(setter)}
+			type={type}
+			placeholder={description}
 		/>
-		);
+	);
 
-		return (
+	return (
 		<div
-		key={_id}
+			key={_id}
 		>
-		<Label>{label}</Label>
-		{control}
+			<Label>{label}</Label>
+			{control}
 		</div>
-		);
-		};
+	);
+};
 
 export const SignUpForm = () => {
 	const {Group, Label, Control, Text} = Form;
@@ -210,13 +211,9 @@ export const SignUpForm = () => {
 			const {username, email, password} = values;
 			const profile = omitBaseProps(mergeMetaData(values));
 			const options = {username, email, password, profile};
-			Meteor.call('addPerson', options, (error, result) => {
-				if (error) {
-					setError(error.message);
-					return;
-				}
-				history.push(`/account-created/${role}`);
-			})
+			people.addPerson(options)
+				.then(_ => history.push(`/account-created/${role}`))
+				.catch(err => setError(err.message));
 		} else {
 			setError("Please give us a name, a means of contact, and a location.");
 		}
