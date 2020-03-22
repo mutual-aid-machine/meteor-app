@@ -61,6 +61,27 @@ const Menu = () => {
 	);
 };
 
+export const FourOhFour = ({
+}) => {
+	return (
+		<h1
+			style={{
+				fontSize: '4em'
+			}}
+		>
+			404
+			<br/>
+			The page you entered doesn't exist.
+			<br/>
+			<a href="/">
+			Our homepage is <span style={{
+				textDecoration: 'underline'
+			}}>here</span>.
+			</a>
+		</h1>
+	);
+};
+
 const browserHistory = createBrowserHistory();
 export const RouteyAppyThing = ({
 }) => {
@@ -88,6 +109,10 @@ export const RouteyAppyThing = ({
 				<Route exact 
 					path="/~/:username"
 					component={UserHomePage}
+				/>
+				<Route 
+					path="/:strangeness"
+					component={FourOhFour}
 				/>
 			</Switch>
 		</Router>
