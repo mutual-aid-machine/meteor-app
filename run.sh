@@ -8,4 +8,4 @@ done
 
 METEOR_SETTINGS=`cat settings.json`
 
-export METEOR_SETTINGS; meteor --settings settings.json
+export METEOR_SETTINGS; meteor --port 8080 --settings settings.json 
