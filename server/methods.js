@@ -12,7 +12,7 @@ Meteor.methods({
 	},
 
 	getProfile(requestedUsername) {
-		const {_id, username: callerUsername, profile: {role}} = Meteor.user();
+		const {username: callerUsername, profile: {role}} = Meteor.user();
 
 		const isAllowed = (
 			callerUsername === requestedUsername ||
@@ -21,11 +21,13 @@ Meteor.methods({
 
 		if (!isAllowed) { 
 			throw new Meteor.Error('You don\'t have permission to view this document');
-		};
+		}
 
 		const {profile} = Meteor.users.findOne(
 			{username: requestedUsername},
-			{profile: 1}
+			{
+				fields: {profile: 1}
+			}
 		);
 
 		if (!profile) {

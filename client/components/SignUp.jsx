@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import {Formik} from 'formik';
 import {Button, Form, Col} from "react-bootstrap";
 import {useHistory, useParams} from "react-router";
 import {head, equals, compose, includes, mergeRight, omit, prop} from "ramda";
@@ -15,7 +14,7 @@ const getCity = compose(
 	head,
 );
 
-const masterRoles = [
+export const roles = [
 	{
 		_id: 'to-help',
 		needsHelp: false,
@@ -41,10 +40,9 @@ const needsHelp = compose(
 	equals(true),
 	prop('needsHelp'),
 );
-const roles = masterRoles.map(getId);
-const helpyRoles = masterRoles.filter(doesntNeedHelp).map(getId);
-const needsHelpy = masterRoles.filter(needsHelp).map(getId);
-const selectableRoles = masterRoles.filter(isSelectable).map(getId);
+const helpyRoles = roles.filter(doesntNeedHelp).map(getId);
+const needsHelpy = roles.filter(needsHelp).map(getId);
+const selectableRoles = roles.filter(isSelectable).map(getId);
 const isHelpy = x => includes(x, helpyRoles);
 
 const FormRow = ({
@@ -53,9 +51,8 @@ const FormRow = ({
 	required = false,
 	options = [],
 	rows = 3,
-	validator,
 }) => {
-	const {Row, Group, Label, Control, Text} = Form;
+	const {Row, Group, Label, Control} = Form;
 
 	const option = r => (
 		<option
@@ -112,7 +109,7 @@ const FormRow = ({
 };
 
 export const SignUpForm = () => {
-	const {Group, Label, Control, Text} = Form;
+	const {Group, Label} = Form;
 	const {role: suppliedRole} = useParams();
 	const history = useHistory();
 	const mapAccess = {
@@ -131,7 +128,7 @@ export const SignUpForm = () => {
 	const [phoneNumber, setPhoneNumber] = useState('');
 	const [error, setError] = useState('');
 	const [role, setRole] = useState(suppliedRole);
-	const [viewport, setViewport] = useState({});
+	const [viewport] = useState({});
 	const [geometry, setGeometry] = useState({});
 	const [geographyContext, setGeographyContext] = useState([]);
 	//Sub-units?
@@ -248,10 +245,6 @@ export const SignUpForm = () => {
 			const omitBaseProps = omit(['username', 'email', 'password']);
 			const mergeMetaData = mergeRight(meta);
 
-			const setErrorMessage = compose(
-				setError,
-				prop('message'),
-			);
 			const {username, email, password} = values;
 			const profile = omitBaseProps(mergeMetaData(values));
 			const options = {username, email, password, profile};
@@ -272,17 +265,6 @@ export const SignUpForm = () => {
 		setGeometry(geometry);
 		setGeographyContext(context);
 	};
-
-	const captainDialog = isHelpy(role) ? (
-		<div>
-			<Label>
-				If you've got a lot of time on your hands, would you like to be a <a href="/what-is-a-zone-captain">Zone
-				Captain</a>?
-				<br/>
-				We'd forward your number to someone who could brief you on the responsibilities.
-			</Label>
-		</div>
-	) : null;
 
 	const Header = () => (
 		<div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Route, Router, Switch, useParams} from 'react-router';
+import {Route, Router, Switch} from 'react-router';
 import {createBrowserHistory} from 'history';
 import {AccountUiWrapper} from './SignUpStuff';
 import {SignUpForm} from "./SignUp";
@@ -28,17 +28,6 @@ export const HelpZone = () => (
 		or you can see the source code <a href="https://github.com/Mutual-Aid-Machine/meteor-app"> here </a>
 	</div>
 );
-
-export const Success = props => {
-	const {role} = useParams();
-	const user = Meteor.user();
-
-	return (
-		<div>
-			{role}
-		</div>
-	);
-};
 
 const Menu = () => {
 	return (

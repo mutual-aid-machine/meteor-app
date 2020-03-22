@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-import {Meteor} from 'meteor/meteor';
+import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router';
 import {getProfile} from './people-calls';
 
@@ -9,11 +8,14 @@ export const UserHomePage = ({
 	const {username} = useParams();
 	const [profile, setProfile] = useState({});
 	const [name, setName] = useState('');
-	const user = getProfile(username)
-		.then(profile => {
-			setProfile(profile);
-			setName(profile.name || username);
-		});
+
+	useEffect(() => {
+		getProfile(username)
+			.then(profile => {
+				setProfile(profile);
+				setName(profile.name || username);
+			});
+	}, [username]);
 
 	const message = newRegistry ? (
 		<h1>
@@ -21,7 +23,7 @@ export const UserHomePage = ({
 		</h1>
 	) : (
 		<h1>
-			Welcome back, {profile.name}.
+			Welcome back, {name}.
 		</h1>
 	);
 

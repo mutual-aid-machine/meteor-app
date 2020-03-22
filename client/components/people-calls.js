@@ -1,5 +1,4 @@
 import {Meteor} from 'meteor/meteor';
-import {Accounts} from 'meteor/accounts-base';
 
 const promiseCallback = (resolve, reject) => (error, result) => (
 	error ? reject(error) : resolve(result)
@@ -19,6 +18,6 @@ export const getProfile = username => new Promise((resolve, reject) => (
 	Meteor.call('getProfile', username, promiseCallback(resolve, reject))
 ));
 
-export default people = {
+export default {
 	addPerson, login, getProfile
 };
