@@ -95,7 +95,7 @@ export const RouteyAppyThing = ({
 				<Route exact path="/what-is-a-zone-captain" component={ZoneCaptainExplained} />
 				<Route exact path="/help" component={HelpZone} />
 				<Route exact 
-					path="/account-created/:role" 
+					path="/account-created/:username/:role" 
 					component={() => (
 						<UserHomePage
 							newRegistry={true}

@@ -7,6 +7,7 @@ export const UserHomePage = ({
 }) => {
 	const {username} = useParams();
 	const [profile, setProfile] = useState({});
+	const [error, setError] = useState('');
 	const [name, setName] = useState('');
 
 	useEffect(() => {
@@ -14,6 +15,10 @@ export const UserHomePage = ({
 			.then(profile => {
 				setProfile(profile);
 				setName(profile.name || username);
+			})
+			.catch(e => {
+				setError(error.message);
+				setName(username);
 			});
 	}, [username]);
 
