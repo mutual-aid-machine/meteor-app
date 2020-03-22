@@ -2,13 +2,18 @@ import React, {useState} from "react";
 import {Formik} from 'formik';
 import {Button, Form, Col} from "react-bootstrap";
 import {useHistory, useParams} from "react-router";
-import {equals, compose, includes, mergeRight, omit, prop} from "ramda";
+import {head, equals, compose, includes, mergeRight, omit, prop} from "ramda";
 import people from './people-calls';
 import Geocoder from "react-mapbox-gl-geocoder";
 import * as validator from 'email-validator';
 
 export const handleChange = setter => e => setter(e.target.value);
 const isIn = obj => k => Boolean(obj[k]);
+
+const getCity = compose(
+	prop('text'),
+	head,
+);
 
 const masterRoles = [
 	{

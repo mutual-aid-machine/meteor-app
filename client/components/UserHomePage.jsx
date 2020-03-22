@@ -1,0 +1,33 @@
+import React, {useState} from 'react';
+import {Meteor} from 'meteor/meteor';
+import {useParams} from 'react-router';
+import {getProfile} from './people-calls';
+
+export const UserHomePage = ({
+	newRegistry = false
+}) => {
+	const {username} = useParams();
+	const [profile, setProfile] = useState({});
+	const [name, setName] = useState('');
+	const user = getProfile(username)
+		.then(profile => {
+			setProfile(profile);
+			setName(profile.name || username);
+		});
+
+	const message = newRegistry ? (
+		<h1>
+			Hi {profile.name}, thanks for signing up! We'll forward your info to your nearest zone captain.
+		</h1>
+	) : (
+		<h1>
+			Welcome back, {profile.name}.
+		</h1>
+	);
+
+	return (
+		<div>
+			{message}
+		</div>
+	);
+};

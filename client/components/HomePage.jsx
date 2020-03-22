@@ -3,6 +3,7 @@ import {Route, Router, Switch, useParams} from 'react-router';
 import {createBrowserHistory} from 'history';
 import {AccountUiWrapper} from './SignUpStuff';
 import {SignUpForm} from "./SignUp";
+import {UserHomePage} from './UserHomePage.jsx';
 
 export const SignInForm = ({
 }) => (
@@ -85,11 +86,19 @@ export const RouteyAppyThing = ({
 				<Route exact path="/help" component={HelpZone} />
 				<Route exact 
 					path="/account-created/:role" 
-					component={Success}
+					component={() => (
+						<UserHomePage
+							newRegistry={true}
+						/>
+					)}
 				/>
 				<Route exact 
 					path="/sign-up/:role"
 					component={SignUpForm}
+				/>
+				<Route exact 
+					path="/~/:username"
+					component={UserHomePage}
 				/>
 			</Switch>
 		</Router>
