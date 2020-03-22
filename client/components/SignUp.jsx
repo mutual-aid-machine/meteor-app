@@ -235,7 +235,6 @@ export const SignUpForm = () => {
 
 		const meta = {
 			createdAt: new Date(),
-			testing: true,
 		};
 
 		if (
@@ -262,8 +261,8 @@ export const SignUpForm = () => {
 	};
 
 	const handleSelect = (viewport, item) => {
-		const {text, geometry, context} = item;
-		setAddress(text);
+		const {place_name, geometry, context} = item;
+		setAddress(place_name);
 		setGeometry(geometry);
 		setGeographyContext(context);
 	};
