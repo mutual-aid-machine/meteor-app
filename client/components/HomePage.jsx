@@ -64,7 +64,7 @@ const Menu = () => {
 			</h2>
 			<h2>
 				<a href="/help">
-					Looking for an Explaination?
+					Looking for an Explanation?
 				</a>
 			</h2>
 		</div>
