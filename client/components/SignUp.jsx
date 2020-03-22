@@ -3,7 +3,7 @@ import {Formik} from 'formik';
 import {Button, Form, Col} from "react-bootstrap";
 import {useHistory, useParams} from "react-router";
 import {equals, compose, includes, mergeRight, omit, prop} from "ramda";
-import * as people from './people-calls';
+import people from './people-calls';
 import Geocoder from "react-mapbox-gl-geocoder";
 import * as validator from 'email-validator';
 
