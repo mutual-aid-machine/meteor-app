@@ -1,9 +1,11 @@
 import React, {useState} from "react";
-import {Button, Form} from "react-bootstrap";
+import {Formik} from 'formik';
+import {Button, Form, Col} from "react-bootstrap";
 import {useHistory, useParams} from "react-router";
 import {equals, compose, includes, mergeRight, omit, prop} from "ramda";
 import * as people from './people-calls';
 import Geocoder from "react-mapbox-gl-geocoder";
+import * as validator from 'email-validator';
 
 export const handleChange = setter => e => setter(e.target.value);
 const isIn = obj => k => Boolean(obj[k]);
@@ -46,8 +48,10 @@ const FormRow = ({
 	required = false,
 	options = [],
 	rows = 3,
+	validator,
 }) => {
-	const {Group, Label, Control, Text} = Form;
+	const {Row, Group, Label, Control, Text} = Form;
+
 	const option = r => (
 		<option
 			value={r}
@@ -55,6 +59,16 @@ const FormRow = ({
 		>
 			{r}
 		</option>
+	);
+
+	const controlF = p => (
+		<Control
+			required={required}
+			value={value}
+			onChange={handleChange(setter)}
+			placeholder={description}
+			{...p}
+		/>
 	);
 
 	const control = type === 'select' ? (
@@ -68,31 +82,27 @@ const FormRow = ({
 			{options.map(option)}
 		</Control>
 	) : type === 'textarea' ? (
-		<Control
-			required={required}
-			value={value}
-			onChange={handleChange(setter)}
-			as={type}
-			rows={rows}
-			placeholder={description}
-		/>
+		controlF({as: type, rows})
 	) : (
-		<Control
-			required={required}
-			value={value}
-			onChange={handleChange(setter)}
-			type={type}
-			placeholder={description}
-		/>
+		controlF({type})
 	);
 
 	return (
-		<div
+		<Group
 			key={_id}
+			controlId={_id}
+			as={Row}
 		>
-			<Label>{label}</Label>
-			{control}
-		</div>
+			<Label
+				column
+				sm={2}
+			>{label}</Label>
+			<Col
+				sm={10}
+			>
+				{control}
+			</Col>
+		</Group>
 	);
 };
 
@@ -106,7 +116,6 @@ export const SignUpForm = () => {
 	const header = {
 		fontSize: '1.15em',
 	};
-
 
 	const [name, setName] = useState('');
 	const [message, setMessage] = useState('');
@@ -122,6 +131,7 @@ export const SignUpForm = () => {
 	const [geographyContext, setGeographyContext] = useState([]);
 	//Sub-units?
 	const [address, setAddress] = useState('');
+	const [validated, setValidated] = useState(false);
 
 	const fields = [
 		{
@@ -143,11 +153,13 @@ export const SignUpForm = () => {
 		},
 		{
 			_id: 'email',
+			type: 'email',
 			label: 'E-mail *',
 			value: email,
 			setter: setEmail,
 			description: 'Would you like to be emailed? If so, where?',
 			required: true,
+			validator: validator.validate.bind(validator),
 		},
 		{
 			_id: 'password',
@@ -210,6 +222,7 @@ export const SignUpForm = () => {
 
 	const handleSubmit = e => {
 		e.preventDefault();
+		setValidated(true);
 		const allFields = fields.concat(extraFields);
 		const requiredFields = allFields
 			.filter(prop('required'))
@@ -284,9 +297,12 @@ export const SignUpForm = () => {
 	);
 
 	return (
-		<Form onSubmit={handleSubmit}>
+		<div>
 			<Header />
-			<Group>
+			<Form 
+				validated={validated}
+				onSubmit={handleSubmit}
+			>
 				{
 					/* TODO
 					 * how can you help?
@@ -294,22 +310,26 @@ export const SignUpForm = () => {
 				}
 				{fields.map(FormRow)}
 				{/*captainDialog*/}
-				<Label>
-					Address or Postal Code *
-				</Label>
-				<Geocoder
-					{...mapAccess}
-					onSelected={handleSelect}
-					viewport={viewport}
-					hideOnSelect={false}
-					updateInputOnSelect={true}
-				/>
-			</Group>
-			<Button
-				onClick={handleSubmit}
-			>
-				submit
-			</Button>
-		</Form>
+				<Group
+					controlId='address'
+				>
+					<Label>
+						Address or Postal Code *
+					</Label>
+					<Geocoder
+						{...mapAccess}
+						onSelected={handleSelect}
+						viewport={viewport}
+						hideOnSelect={false}
+						updateInputOnSelect={true}
+					/>
+				</Group>
+				<Button
+					onClick={handleSubmit}
+				>
+					submit
+				</Button>
+			</Form>
+		</div>
 	);
 };
