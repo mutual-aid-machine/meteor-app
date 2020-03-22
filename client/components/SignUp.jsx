@@ -242,7 +242,9 @@ export const SignUpForm = () => {
 			requiredFields.every(isIn(values)) &&
 			password === confirmPassword
 		) {
-			const omitBaseProps = omit(['username', 'email', 'password']);
+			const omitBaseProps = omit([
+				'username', 'email', 'password', 'confirmPassword'
+			]);
 			const mergeMetaData = mergeRight(meta);
 
 			const {username, email, password} = values;
