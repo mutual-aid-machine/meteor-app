@@ -1,8 +1,7 @@
 import React, {useState} from "react";
-import {Formik} from 'formik';
 import {Button, Form, Col} from "react-bootstrap";
 import {useHistory, useParams} from "react-router";
-import {equals, compose, includes, mergeRight, omit, prop} from "ramda";
+import {head, equals, compose, includes, mergeRight, omit, prop} from "ramda";
 import people from './people-calls';
 import Geocoder from "react-mapbox-gl-geocoder";
 import * as validator from 'email-validator';
@@ -10,7 +9,12 @@ import * as validator from 'email-validator';
 export const handleChange = setter => e => setter(e.target.value);
 const isIn = obj => k => Boolean(obj[k]);
 
-const masterRoles = [
+const getCity = compose(
+	prop('text'),
+	head,
+);
+
+export const roles = [
 	{
 		_id: 'to-help',
 		needsHelp: false,
@@ -36,10 +40,9 @@ const needsHelp = compose(
 	equals(true),
 	prop('needsHelp'),
 );
-const roles = masterRoles.map(getId);
-const helpyRoles = masterRoles.filter(doesntNeedHelp).map(getId);
-const needsHelpy = masterRoles.filter(needsHelp).map(getId);
-const selectableRoles = masterRoles.filter(isSelectable).map(getId);
+const helpyRoles = roles.filter(doesntNeedHelp).map(getId);
+const needsHelpy = roles.filter(needsHelp).map(getId);
+const selectableRoles = roles.filter(isSelectable).map(getId);
 const isHelpy = x => includes(x, helpyRoles);
 
 const FormRow = ({
@@ -48,9 +51,8 @@ const FormRow = ({
 	required = false,
 	options = [],
 	rows = 3,
-	validator,
 }) => {
-	const {Row, Group, Label, Control, Text} = Form;
+	const {Row, Group, Label, Control} = Form;
 
 	const option = r => (
 		<option
@@ -107,7 +109,7 @@ const FormRow = ({
 };
 
 export const SignUpForm = () => {
-	const {Group, Label, Control, Text} = Form;
+	const {Group, Label} = Form;
 	const {role: suppliedRole} = useParams();
 	const history = useHistory();
 	const mapAccess = {
@@ -126,7 +128,7 @@ export const SignUpForm = () => {
 	const [phoneNumber, setPhoneNumber] = useState('');
 	const [error, setError] = useState('');
 	const [role, setRole] = useState(suppliedRole);
-	const [viewport, setViewport] = useState({});
+	const [viewport] = useState({});
 	const [geometry, setGeometry] = useState({});
 	const [geographyContext, setGeographyContext] = useState([]);
 	//Sub-units?
@@ -233,48 +235,38 @@ export const SignUpForm = () => {
 
 		const meta = {
 			createdAt: new Date(),
-			testing: true,
 		};
 
 		if (
 			requiredFields.every(isIn(values)) &&
 			password === confirmPassword
 		) {
-			const omitBaseProps = omit(['username', 'email', 'password']);
+			const omitBaseProps = omit([
+				'username', 'email', 'password', 'confirmPassword'
+			]);
 			const mergeMetaData = mergeRight(meta);
 
-			const setErrorMessage = compose(
-				setError,
-				prop('message'),
-			);
 			const {username, email, password} = values;
 			const profile = omitBaseProps(mergeMetaData(values));
 			const options = {username, email, password, profile};
 			people.addPerson(options)
-				.then(_ => history.push(`/account-created/${role}`))
-				.catch(err => setError(err.message));
+				.then(_ => people.login({username}, password))
+				.then(_ => history.push(`/account-created/${username}/${role}`))
+				.catch(err => {
+					console.error(err);
+					setError(err.message);
+				});
 		} else {
 			setError("Please give us a name, a means of contact, and a location.");
 		}
 	};
 
 	const handleSelect = (viewport, item) => {
-		const {text, geometry, context} = item;
-		setAddress(text);
+		const {place_name, geometry, context} = item;
+		setAddress(place_name);
 		setGeometry(geometry);
 		setGeographyContext(context);
 	};
-
-	const captainDialog = isHelpy(role) ? (
-		<div>
-			<Label>
-				If you've got a lot of time on your hands, would you like to be a <a href="/what-is-a-zone-captain">Zone
-				Captain</a>?
-				<br/>
-				We'd forward your number to someone who could brief you on the responsibilities.
-			</Label>
-		</div>
-	) : null;
 
 	const Header = () => (
 		<div>

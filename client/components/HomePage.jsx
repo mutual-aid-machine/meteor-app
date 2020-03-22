@@ -1,8 +1,9 @@
 import React from 'react';
-import {Route, Router, Switch, useParams} from 'react-router';
+import {Route, Router, Switch} from 'react-router';
 import {createBrowserHistory} from 'history';
 import {AccountUiWrapper} from './SignUpStuff';
 import {SignUpForm} from "./SignUp";
+import {UserHomePage} from './UserHomePage.jsx';
 
 export const SignInForm = ({
 }) => (
@@ -27,17 +28,6 @@ export const HelpZone = () => (
 		or you can see the source code <a href="https://github.com/Mutual-Aid-Machine/meteor-app"> here </a>
 	</div>
 );
-
-export const Success = props => {
-	const {role} = useParams();
-	const user = Meteor.user();
-	console.log('user', user);
-	return (
-		<div>
-			{role}
-		</div>
-	);
-};
 
 const Menu = () => {
 	return (
@@ -64,10 +54,31 @@ const Menu = () => {
 			</h2>
 			<h2>
 				<a href="/help">
-					Looking for an Explaination?
+					Looking for an Explanation?
 				</a>
 			</h2>
 		</div>
+	);
+};
+
+export const FourOhFour = ({
+}) => {
+	return (
+		<h1
+			style={{
+				fontSize: '4em'
+			}}
+		>
+			404
+			<br/>
+			The page you entered doesn't exist.
+			<br/>
+			<a href="/">
+			Our homepage is <span style={{
+				textDecoration: 'underline'
+			}}>here</span>.
+			</a>
+		</h1>
 	);
 };
 
@@ -84,12 +95,24 @@ export const RouteyAppyThing = ({
 				<Route exact path="/what-is-a-zone-captain" component={ZoneCaptainExplained} />
 				<Route exact path="/help" component={HelpZone} />
 				<Route exact 
-					path="/account-created/:role" 
-					component={Success}
+					path="/account-created/:username/:role" 
+					component={() => (
+						<UserHomePage
+							newRegistry={true}
+						/>
+					)}
 				/>
 				<Route exact 
 					path="/sign-up/:role"
 					component={SignUpForm}
+				/>
+				<Route exact 
+					path="/~/:username"
+					component={UserHomePage}
+				/>
+				<Route 
+					path="/:strangeness"
+					component={FourOhFour}
 				/>
 			</Switch>
 		</Router>
