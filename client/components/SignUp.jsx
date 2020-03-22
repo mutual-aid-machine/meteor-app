@@ -14,26 +14,32 @@ const getCity = compose(
 	head,
 );
 
-const Header = () => (
-	<div>
-		<h2>
-			Help us help you:
-		</h2>
-		<p style={header}>
-			We'll forward this information to your nearest <a href="/what-is-a-zone-captain">zone captain</a>,
-			<br/>
-			They'll get in touch with you to {isHelpy(role) ? 'help you help others' : 'get you the help you need'}.
-			<br/>
-			We recognize it's overly simplistic to group people into 'can help' and 'needs help'
-			<br/>
-			(Everyone has something to offer, and no one man is an island)
-			<br/>
-			But we've got to get this app started somehow.
-		</p>
-		<p>(password reset doesn't work yet so don't loose that password!)</p>
-		<h2>{error}</h2>
-	</div>
-);
+const Header = () => {
+	const header = {
+		fontSize: '1.15em',
+	};
+
+	return (
+		<div>
+			<h2>
+				Help us help you:
+			</h2>
+			<p style={header}>
+				We'll forward this information to your nearest <a href="/what-is-a-zone-captain">zone captain</a>,
+				<br/>
+				They'll get in touch with you to {isHelpy(role) ? 'help you help others' : 'get you the help you need'}.
+				<br/>
+				We recognize it's overly simplistic to group people into 'can help' and 'needs help'
+				<br/>
+				(Everyone has something to offer, and no one man is an island)
+				<br/>
+				But we've got to get this app started somehow.
+			</p>
+			<p>(password reset doesn't work yet so don't loose that password!)</p>
+			<h2>{error}</h2>
+		</div>
+	);
+};
 
 export const roles = [
 	{
@@ -135,9 +141,6 @@ export const SignUpForm = () => {
 	const history = useHistory();
 	const mapAccess = {
 		mapboxApiAccessToken: Meteor.settings.public.MAPBOX_TOKEN,
-	};
-	const header = {
-		fontSize: '1.15em',
 	};
 
 	const [name, setName] = useState('');
