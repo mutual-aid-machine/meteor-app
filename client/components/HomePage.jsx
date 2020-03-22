@@ -31,7 +31,7 @@ export const HelpZone = () => (
 export const Success = props => {
 	const {role} = useParams();
 	const user = Meteor.user();
-	console.log('user', user);
+
 	return (
 		<div>
 			{role}

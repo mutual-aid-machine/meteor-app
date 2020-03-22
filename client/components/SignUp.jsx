@@ -251,7 +251,10 @@ export const SignUpForm = () => {
 			const profile = omitBaseProps(mergeMetaData(values));
 			const options = {username, email, password, profile};
 			people.addPerson(options)
-				.then(_ => history.push(`/account-created/${role}`))
+				.then(_ => {
+					people.login({username}, password);
+					history.push(`/account-created/${role}`);
+				})
 				.catch(err => setError(err.message));
 		} else {
 			setError("Please give us a name, a means of contact, and a location.");
